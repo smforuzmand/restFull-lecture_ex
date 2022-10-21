@@ -2,7 +2,7 @@ package se.mohsen.restfulllecture_ex.repo;
 
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import se.mohsen.restfulllecture_ex.entity.Role;
+import se.mohsen.restfulllecture_ex.model.entity.Role;
 
 import java.util.Optional;
 

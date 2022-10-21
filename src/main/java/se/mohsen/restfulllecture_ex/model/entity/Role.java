@@ -1,4 +1,4 @@
-package se.mohsen.restfulllecture_ex.entity;
+package se.mohsen.restfulllecture_ex.model.entity;
 
 
 import lombok.*;

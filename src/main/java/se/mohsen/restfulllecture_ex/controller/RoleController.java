@@ -6,6 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import se.mohsen.restfulllecture_ex.RestFullLectureExApplication;
+import se.mohsen.restfulllecture_ex.exception.ResourceNotFoundException;
+
 import se.mohsen.restfulllecture_ex.model.dto.RoleDto;
 import se.mohsen.restfulllecture_ex.model.entity.Role;
 import se.mohsen.restfulllecture_ex.repo.RoleRepository;
@@ -60,10 +63,14 @@ public class RoleController {
 // then we gonna find a way to address/access this path variable
 // so the address in the get method must mach the path variable
     @GetMapping("/api/v1/role/{id}")
-    public ResponseEntity<RoleDto> findByRoleId(@PathVariable("id") Integer Id) {
-        System.out.println("Id = " + Id);
+    public ResponseEntity<RoleDto> findByRoleId(@PathVariable("id") Integer id) {
 
-        Optional<Role> foundById = repository.findById(Id);
+
+        if (id==null) throw new IllegalArgumentException("id was null");
+
+        Role foundById = repository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("Role data not found"));
+
 
 
 //        RoleDto roleDto = new RoleDto(foundById.get().getId(), foundById.get().getName());
@@ -89,9 +96,11 @@ public class RoleController {
     @GetMapping("/api/v1/role/name")
     public ResponseEntity<RoleDto> findByRoleName(@RequestParam("name") String name) {
 
-        Optional<Role> foundByName = repository.findByName(name);
-        RoleDto roleDto = new RoleDto(foundByName.get().getId(), foundByName.get().getName());
+        if (name==null) throw new IllegalArgumentException("name is null");
 
+        Role foundByName = repository.findByName(name).orElseThrow(
+                () -> new ResourceNotFoundException("Role data not found")
+        );
 
         return ResponseEntity.ok(modelMapper.map(foundByName ,RoleDto.class));
 //
@@ -128,7 +137,7 @@ public class RoleController {
 
         System.out.println("roleForm = " + roleForm);
 //        first we define a role object
-//        according to the param we define a new objrc, both are the same
+//        according to the param we define a new object, both are the same
 //        Role role = new Role(roleForm.getId(), roleForm.getName());
 
         Role role = modelMapper.map(roleForm, Role.class);

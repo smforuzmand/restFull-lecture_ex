@@ -6,16 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import se.mohsen.restfulllecture_ex.RestFullLectureExApplication;
-import se.mohsen.restfulllecture_ex.exception.ResourceNotFoundException;
-
 import se.mohsen.restfulllecture_ex.model.dto.RoleDto;
 import se.mohsen.restfulllecture_ex.model.entity.Role;
 import se.mohsen.restfulllecture_ex.repo.RoleRepository;
-
-import java.util.ArrayList;
+import se.mohsen.restfulllecture_ex.service.RoleService;
 import java.util.List;
-import java.util.Optional;
+
 
 @RestController
 public class RoleController {
@@ -24,11 +20,13 @@ public class RoleController {
     private final RoleRepository repository;
 
     private final ModelMapper modelMapper;
+    private final RoleService roleService;
 
     @Autowired
-    public RoleController(RoleRepository repository, ModelMapper modelMapper) {
+    public RoleController(RoleRepository repository, ModelMapper modelMapper, RoleService roleService) {
         this.repository = repository;
         this.modelMapper = modelMapper;
+        this.roleService = roleService;
     }
 
 
@@ -47,16 +45,20 @@ public class RoleController {
     public ResponseEntity<List<RoleDto>> findAll() {
 
         System.out.println("Get roles in this way");
+        return ResponseEntity.ok(roleService.findAll());
 
-        List<Role> roleList = repository.findAll();
-        List<RoleDto> roleDtoList = new ArrayList<>();
+//        List<Role> roleList = repository.findAll();
+////        List<RoleDto> roleDtoList = new ArrayList<>();
+////
+////        for (Role role : roleList) {
+////            roleDtoList.add(new RoleDto(role.getId(), role.getName()))
+////            ;
+////        }
+//
+//        List<RoleDto> roleDtoList = modelMapper.map(roleList, new TypeToken<List<RoleDto>>() {
+//        }.getType());
 
-        for (Role role : roleList) {
-            roleDtoList.add(new RoleDto(role.getId(), role.getName()))
-            ;
-        }
 
-        return ResponseEntity.ok(roleDtoList);
     }
 
     //first we specify the parameters then we say that it is a path variable
@@ -65,18 +67,11 @@ public class RoleController {
     @GetMapping("/api/v1/role/{id}")
     public ResponseEntity<RoleDto> findByRoleId(@PathVariable("id") Integer id) {
 
-
-        if (id==null) throw new IllegalArgumentException("id was null");
-
-        Role foundById = repository.findById(id).orElseThrow(
-                () -> new ResourceNotFoundException("Role data not found"));
-
+        return ResponseEntity.ok(roleService.findById(id));
 
 
 //        RoleDto roleDto = new RoleDto(foundById.get().getId(), foundById.get().getName());
 //  then we can do a modelMapper
-
-        return ResponseEntity.ok(modelMapper.map(foundById, RoleDto.class));
 
 
 //        if (foundById.isPresent()) {
@@ -95,14 +90,7 @@ public class RoleController {
 
     @GetMapping("/api/v1/role/name")
     public ResponseEntity<RoleDto> findByRoleName(@RequestParam("name") String name) {
-
-        if (name==null) throw new IllegalArgumentException("name is null");
-
-        Role foundByName = repository.findByName(name).orElseThrow(
-                () -> new ResourceNotFoundException("Role data not found")
-        );
-
-        return ResponseEntity.ok(modelMapper.map(foundByName ,RoleDto.class));
+        return ResponseEntity.ok(roleService.findByName(name));
 //
 //        if (findByName.isPresent()) {
 //            return ResponseEntity.ok(findByName.get());
@@ -144,7 +132,7 @@ public class RoleController {
 //        adding new object to the repository and ctrl+alt+v to define and put it into a variable
         Role saveRole = repository.save(role);
 //        final step is to change the not_implemented into the created and using body for implementing param
-        return ResponseEntity.status(HttpStatus.CREATED).body(modelMapper.map(saveRole,RoleDto.class));
+        return ResponseEntity.status(HttpStatus.CREATED).body(roleService.create(roleForm));
     }
 
     @DeleteMapping("/api/v1/role/{id}")
@@ -153,15 +141,10 @@ public class RoleController {
     public ResponseEntity<Void> delete(@PathVariable("id") Integer id) {
 //        Now we are about to define a status to show the error while the id is nor exist
         if (repository.existsById(id)) {
-
-
-            System.out.println("id = " + id);
-            repository.deleteById(id);
-
-            return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            roleService.deleteById(id);
         }
+        return ResponseEntity.noContent().build();
+
     }
 
     // @RequestMapping(method = RequestMethod.PUT)
@@ -170,16 +153,10 @@ public class RoleController {
 
         System.out.println("roleForm = " + roleForm);
         System.out.println("id = " + id);
-        if (id .equals(roleForm.getId()) ) {
-            Role role = new Role(roleForm.getId(), roleForm.getName());
-            repository.save(role);
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-        } else {
+        roleService.update(roleForm, id);
 
-            return ResponseEntity.status(418).build();
+        return ResponseEntity.status(418).build();
 //416 as well
-        }
-
     }
 
 }

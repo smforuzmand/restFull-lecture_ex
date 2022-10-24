@@ -18,7 +18,7 @@ public class User {
 
     @Id
     @Column(unique = true, updatable = false)
-    private String userName;
+    private String username;
     @Column(nullable = false)
     private String password;
     private boolean expired;
@@ -47,9 +47,7 @@ public class User {
 
     public void removeRole(Role role) {
         if (role ==null) throw new IllegalArgumentException("Role should not be null");
-        if (roles != null) roles = new HashSet<>();
-
-        roles.remove(role);
+        if (roles != null) roles .remove(role);
     }
 
 

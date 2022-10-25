@@ -9,6 +9,8 @@ import se.mohsen.restfulllecture_ex.model.dto.CustomeUserDto;
 import se.mohsen.restfulllecture_ex.model.dto.UserDto;
 import se.mohsen.restfulllecture_ex.service.UserService;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("/api/v1/users")
 public class UserController {
@@ -22,7 +24,7 @@ public class UserController {
 
 
     @PostMapping
-    public ResponseEntity<UserDto> register(@RequestBody UserDto userDto) {
+    public ResponseEntity<UserDto> register(@Valid @RequestBody UserDto userDto) {
 
 //        we add this sout method to test the output of controller in the console
         System.out.println(userDto);

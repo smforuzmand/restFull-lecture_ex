@@ -9,6 +9,7 @@ import se.mohsen.restfulllecture_ex.exception.ResourceDuplicateException;
 import se.mohsen.restfulllecture_ex.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import se.mohsen.restfulllecture_ex.model.dto.CustomeUserDto;
 import se.mohsen.restfulllecture_ex.model.dto.RoleDto;
 import se.mohsen.restfulllecture_ex.model.dto.UserDto;
 import se.mohsen.restfulllecture_ex.model.entity.User;
@@ -69,6 +70,11 @@ public class UserServiceImpl implements UserService {
 
 //        return Dto
         return convertedToDto;
+    }
+
+    @Override
+    public CustomeUserDto findByUsername(String username) throws ResourceNotFoundException {
+        return null;
     }
 
     public void disableUserByUsername(String username) throws  ResourceNotFoundException {

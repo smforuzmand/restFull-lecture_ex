@@ -3,6 +3,9 @@ package se.mohsen.restfulllecture_ex.model.dto;
 
 import lombok.*;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
+
 @Setter
 @Getter
 @NoArgsConstructor
@@ -11,6 +14,9 @@ import lombok.*;
 public class RoleDto {
 
     private Integer id;
+
+    @NotBlank
+    @Size(min = 2, max = 40, message = "Role must not be a null")
     private String name;
 
 

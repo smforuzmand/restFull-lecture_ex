@@ -5,6 +5,7 @@ package se.mohsen.restfulllecture_ex.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.modelmapper.ModelMapper;
+import se.mohsen.restfulllecture_ex.exception.ResourceDuplicateException;
 import se.mohsen.restfulllecture_ex.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -46,8 +47,9 @@ public class UserServiceImpl implements UserService {
 //        Check if the username is duplicate
         
         if (userRepository.existsByUsername(userDto.getUsername()))
-            throw new IllegalArgumentException("Username is already in use");
+//            throw new IllegalArgumentException("Username is already in use");
 //        check if the Roles are valid Roles
+            throw new ResourceDuplicateException("Username is already in use");
         for (RoleDto roleDto: userDto.getRoles())
         {
             roleRepository.findById(roleDto.getId()).orElseThrow(() -> new ResourceNotFoundException("Role ID is not valid"));

@@ -14,8 +14,6 @@ import se.mohsen.restfulllecture_ex.service.UserService;
 public class UserController {
 
 
-
-
     private final UserService userService;
 
     public UserController(UserService userService) {
@@ -29,10 +27,27 @@ public class UserController {
 //        we add this sout method to test the output of controller in the console
         System.out.println(userDto);
 
-        userService. register(userDto);
+/* generally we can handle the exception  in the following way while we have introduced the handler to do that
+        UserDto result = null;
+        try {
 
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            userService. register(userDto);
+            return ResponseEntity.status(HttpStatus.CREATED).body(result);
+        }catch (ResourceNotFoundException ex){
+            ex.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+*/
+
+        UserDto result = userService.register(userDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(result);
+
+
+
+
+
     }
+
 
 
     @GetMapping({"username"})

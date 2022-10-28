@@ -1,7 +1,9 @@
 package se.mohsen.restfulllecture_ex.model.entity;
 
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -11,7 +13,9 @@ import static javax.persistence.CascadeType.DETACH;
 import static javax.persistence.CascadeType.REFRESH;
 
 @Entity
-@Data
+@Getter
+@Setter
+@ToString
 @Table(name = "users")
 public class User {
 
@@ -24,7 +28,7 @@ public class User {
     private boolean expired;
 
 
-    //    it might have to one to many so it is a many to many
+    //    it might have one to many so it is a many to many
 //    uni directional many to many
     @ManyToMany(cascade = {DETACH, REFRESH}, fetch = FetchType.EAGER)
     @JoinTable(name = "USER_ROLES",
